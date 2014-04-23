@@ -53,25 +53,9 @@ public class BasicEvaluator implements Evaluator {
 		  { -5, 10,  5,  3,  3,  5, 10, -5 },
 		  { -5, -5, -5, -5, -5, -5, -5, -5 } };
 
-	private int randomnessStrength;
-	private boolean usingRandomness;
 	
 	public BasicEvaluator(){
-		randomnessStrength = 0;
-		usingRandomness = false;
 	}
-	
-	/**
-	 * Creates an evaluator with a degree of randomness to its calculations.
-	 * Useful for creating a bot that won't do the same thing every time.
-	 * @param randomnessStrength - A random amount between 0 and this value will be added to each evaluate()
-	 */
-	public BasicEvaluator(int randomnessStrength){
-		this.randomnessStrength = randomnessStrength;
-		usingRandomness = true;
-	}
-	
-	
 	
 	/** Evaluates the material and rough positional strength of a position.
 	 *  Positive means better for the active player, negative means better for other player.
@@ -117,9 +101,6 @@ public class BasicEvaluator implements Evaluator {
 				result += val;
 			}
 		}
-		
-		if(usingRandomness)
-			result += (int)(Math.random()*randomnessStrength);
 		
 		return result;
 	}

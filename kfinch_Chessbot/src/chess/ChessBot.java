@@ -12,22 +12,16 @@ public class ChessBot implements Player{
 	private Evaluator evaluator;
 	private SearchTree searchTree;
 	
-	//public ChessBot(int fixedDepth, int captureDepth, int randomness){
-	//	evaluator = new BasicEvaluator(randomness);
-	//	searchTree = new MinimaxTree(evaluator, captureDepth);
-	//	this.fixedDepth = fixedDepth;
-	//}
-	
 	public ChessBot(){
 		evaluator = new BasicEvaluator();
 		searchTree = new ABTree(evaluator);
 		fixedDepth = 6;
 	}
 	
-	public ChessBot(int randomness){
-		evaluator = new BasicEvaluator(randomness);
+	public ChessBot(int fixedDepth){
+		evaluator = new BasicEvaluator();
 		searchTree = new ABTree(evaluator);
-		fixedDepth = 4;
+		this.fixedDepth = fixedDepth;
 	}
 
 	public Move getMove(Board b) {
