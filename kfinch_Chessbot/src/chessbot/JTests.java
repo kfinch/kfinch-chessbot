@@ -1,0 +1,14 @@
+package chessbot;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class JTests {
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}
