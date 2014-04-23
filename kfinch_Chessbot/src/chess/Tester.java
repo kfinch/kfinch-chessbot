@@ -82,19 +82,6 @@ class Tester {
 	}
 	
 	private static void test4(){
-		GameEngine ge = new GameEngine(new HumanPlayer(), new ChessBot());
-		ge.runGame();
-	}
-	
-	private static void test5(){
-		RobotGladiator white = new RobotGladiator();
-		RobotGladiator black = new RobotGladiator();
-		RobotThunderdome.FIGHT(white,black);
-	}
-	
-	private static void test6(){
-		ChessBot white = new ChessBot();
-		ChessBot black = new ChessBot();
-		RobotThunderdome.trialRuns(white, black, 6);
+		LocalGameAscii.runGame(new Board(), new HumanPlayer(), new ChessBot());
 	}
 }

@@ -28,7 +28,9 @@ public class ChessBot implements Player{
 		return searchTree.getBestMoveFixed(b, fixedDepth);
 	}
 
-	public void opponentsMove(Move m){};
+	public Move getMoveTimed(Board b){
+		return null; //TODO: Implement
+	}
 
 
 }

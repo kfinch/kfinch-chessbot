@@ -68,23 +68,61 @@ public class Board {
 		return (byte) (x & 7);
 	}
 
-	public static boolean isEmpty(byte x) {
+	public static boolean isEmpty(byte x) { //returns true iff the given byte represents an empty square.
 		return x == EMPTY;
 	}
 
 	public static byte makeSquare(byte c, byte p) { //returns the byte packing of a given color and piece type
 		return (byte) (p | (c << 3));
 	}
-
 	
-	public static class SquareDesc { //TODO: Am I using this or no?
-		public final byte color, type, x, y;
-		public SquareDesc(byte color, byte type, byte x, byte y) {
-			this.color = color;
-			this.type = type;
-			this.x = x;
-			this.y = y;
+	/**
+	 * A little helper method for converting a pair of coordinates into chess notation.
+	 * For example: coordToNotation(new Coordinate(4,1)) = "e2"
+	 * Returns null if given invalid coordinates.
+	 */
+	public static String coordToNotation(Coordinate c){
+		if(c.x > 7 || c.x < 0 || c.y > 7 || c.y < 0)
+			return null;
+		String result = "";
+		switch(c.x){
+		case 0 : result += "a"; break;
+		case 1 : result += "b"; break;
+		case 2 : result += "c"; break;
+		case 3 : result += "d"; break;
+		case 4 : result += "e"; break;
+		case 5 : result += "f"; break;
+		case 6 : result += "g"; break;
+		case 7 : result += "h"; break;
 		}
+		result += (c.y+1);
+		return result;
+	}
+	
+	/**
+	 * A little helper method for converting chess notation into coordinates on the board's representation.
+	 * For example: notationToCoord("e2") = (4,1)
+	 * Returns null if given invalid notation.
+	 */
+	public static Coordinate notationToCoord(String n){
+		if(n.length() != 2)
+			return null;
+		int x,y;
+		switch(n.charAt(0)){
+		case 'a' : x = 0; break;
+		case 'b' : x = 1; break;
+		case 'c' : x = 2; break;
+		case 'd' : x = 3; break;
+		case 'e' : x = 4; break;
+		case 'f' : x = 5; break;
+		case 'g' : x = 6; break;
+		case 'h' : x = 7; break;
+		default : return null;
+		}
+		y = Integer.parseInt(n.substring(1)) - 1;
+		if(y > 7 || y < 0)
+			return null;
+		return new Coordinate(x,y);
 	}
 
 	/** Creates a new board in the standard starting position */

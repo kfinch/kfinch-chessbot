@@ -15,8 +15,19 @@ public class Move {
 		this.isCapture = isCapture;
 	}
 	
+	public String toNotation(){
+		Coordinate sc = new Coordinate(sx,sy);
+		Coordinate ec = new Coordinate(ex,ey);
+		String result = Board.coordToNotation(sc) + " -> " + Board.coordToNotation(ec);
+		if(isCapture)
+			result += " *";
+		return result;
+	}
+	
 	public String toString(){
-		String result = "(" + sx + "," + sy + ") -> (" + ex + "," + ey + ")";
+		Coordinate sc = new Coordinate(sx,sy);
+		Coordinate ec = new Coordinate(ex,ey);
+		String result = sc + " -> " + ec;
 		if(isCapture)
 			result += "*";
 		return result;
