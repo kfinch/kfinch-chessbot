@@ -1,12 +1,11 @@
 package chess;
 
-import java.util.*;
+import java.util.List;
 
-/*
+/**
  * ABTree.java
  * An Alpha-Beta tree used by the bot to calculate best move
  */
-
 class ABTree implements SearchTree {
 	
 	
@@ -33,7 +32,7 @@ class ABTree implements SearchTree {
 			return e.evaluate(b);
 		
 		int curr;
-		ArrayList<Move> ml = b.generateMoves();
+		List<Move> ml = b.generateMoves();
 		
 		if(ml.isEmpty()){ //i.e. board is in a game over position
 			if(b.inCheck(b.turn)) //checkmate!

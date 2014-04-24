@@ -1,6 +1,9 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.List;
+import java.util.Random;
 
 /*
  * Board.java
@@ -221,7 +224,7 @@ public class Board {
 	 * To find all legal moves for a bot, use generateMoves() instead.
 	 */
 	public boolean isLegalMove(Move m){
-		ArrayList<Move> ml = generateMoves();
+		List<Move> ml = generateMoves();
 		if(ml.contains(m))
 			return true;
 		return false;
@@ -394,9 +397,9 @@ public class Board {
 	}
 
 	/** Returns a list of every legal move from the current game state */
-	public ArrayList<Move> generateMoves() {
+	public List<Move> generateMoves() {
 		//TODO: Empirically test to see if 50 is a reasonable starting size for this list
-		ArrayList<Move> moveList = new ArrayList<Move>(50);
+		List<Move> moveList = new ArrayList<Move>(50);
 
 		for(int x=0; x<8; x++){
 			for(int y=0; y<8; y++){

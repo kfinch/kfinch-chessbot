@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class HumanPlayer implements Player {
@@ -22,7 +22,7 @@ public class HumanPlayer implements Player {
 			System.out.println(prompt);
 			moveOrder = input.nextLine();
 			if(moveOrder.startsWith("pm")){
-				ArrayList<Move> ml = b.generateMoves();
+				List<Move> ml = b.generateMoves();
 				for(Move temp : ml){
 					System.out.println(temp.toNotation());
 				}

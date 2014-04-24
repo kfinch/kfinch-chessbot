@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A minimax tree for searching the chess game tree for the best move. Allows for variable ply.
@@ -60,7 +60,7 @@ public class MinimaxTree implements SearchTree {
 		
 		int best = -Integer.MAX_VALUE;
 		int curr;
-		ArrayList<Move> ml = b.generateMoves();
+		List<Move> ml = b.generateMoves();
 		
 		if(ml.isEmpty()){ //i.e. board is in a game over position
 			if(b.inCheck(b.turn)) //checkmate!
