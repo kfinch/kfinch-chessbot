@@ -1,4 +1,8 @@
-package chess;
+package chessbot;
+
+import chess_backend.Board;
+import chess_backend.Move;
+import chess_frontend.Player;
 
 /*
  * ChessBot.java

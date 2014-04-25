@@ -1,6 +1,9 @@
-package chess;
+package chessbot;
 
 import java.util.List;
+
+import chess_backend.Board;
+import chess_backend.Move;
 
 /**
  * ABTree.java

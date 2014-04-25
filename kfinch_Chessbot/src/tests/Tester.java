@@ -1,6 +1,12 @@
-package chess;
+package tests;
 
 import java.util.List;
+
+import chess_backend.Board;
+import chess_backend.Move;
+import chess_frontend.HumanPlayer;
+import chess_frontend.LocalGameAscii;
+import chessbot.ChessBot;
 
 class Tester {
 

@@ -1,7 +1,11 @@
-package chess;
+package chess_frontend;
 
 import java.util.List;
 import java.util.Scanner;
+
+import chess_backend.Board;
+import chess_backend.Coordinate;
+import chess_backend.Move;
 
 public class HumanPlayer implements Player {
 

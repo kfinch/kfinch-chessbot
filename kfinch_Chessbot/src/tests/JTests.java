@@ -1,8 +1,11 @@
-package chess;
+package tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.*;
+
+import chess_backend.Board;
+import chess_backend.Coordinate;
 
 public class JTests {
 

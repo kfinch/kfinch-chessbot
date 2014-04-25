@@ -1,4 +1,7 @@
-package chess;
+package chess_frontend;
+
+import chess_backend.Board;
+import chess_backend.Move;
 
 
 /*
@@ -24,7 +27,7 @@ public class LocalGameAscii {
 	public static int runGame(Board gameState, Player white, Player black){ //TODO: Should this be static?
 		Move m;
 		while(true){
-			System.out.println(gameState + "\n");
+			System.out.println(gameState);
 			if(gameState.generateMoves().isEmpty()){ //The game is over.
 				if(gameState.inCheck(gameState.turn)){
 					System.out.println("Checkmate!");
@@ -54,7 +57,7 @@ public class LocalGameAscii {
 				} while(m == null || !gameState.isLegalMove(m)); //check move legality
 			}
 			gameState.makeMove(m);
-			System.out.println(m.toNotation());
+			System.out.println(m.toNotation() + "\n");
 		}
 	}
 	

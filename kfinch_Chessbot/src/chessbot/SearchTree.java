@@ -1,4 +1,7 @@
-package chess;
+package chessbot;
+
+import chess_backend.Board;
+import chess_backend.Move;
 
 public interface SearchTree {
 	public Move getBestMoveFixed(Board b, int depth);

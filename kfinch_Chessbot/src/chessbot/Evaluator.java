@@ -1,4 +1,6 @@
-package chess;
+package chessbot;
+
+import chess_backend.Board;
 
 public interface Evaluator {
 	public int getCheckmate();

@@ -1,4 +1,6 @@
-package chess;
+package chessbot;
+
+import chess_backend.Board;
 
 /**
  * This class provides an evaluation method that returns an estimate of the

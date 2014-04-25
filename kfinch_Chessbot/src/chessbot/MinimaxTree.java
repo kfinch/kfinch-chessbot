@@ -1,6 +1,9 @@
-package chess;
+package chessbot;
 
 import java.util.List;
+
+import chess_backend.Board;
+import chess_backend.Move;
 
 /**
  * A minimax tree for searching the chess game tree for the best move. Allows for variable ply.

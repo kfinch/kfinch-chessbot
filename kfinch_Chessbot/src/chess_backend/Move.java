@@ -1,4 +1,4 @@
-package chess;
+package chess_backend;
 
 public class Move {
 	public int sx;
