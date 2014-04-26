@@ -68,14 +68,15 @@ public class BasicEvaluator implements Evaluator {
 		int val = 0;
 
 		// Favor castled positions
-		if(board.hasCastled[board.turn])
+		if(board.hasCastled(board.getTurn()))
 			result += CASTLE_VALUE;
-		if(board.hasCastled[board.turn == Board.BLACK ? Board.WHITE : Board.BLACK])
+		if(board.hasCastled(board.getTurn() == Board.BLACK ? Board.WHITE : Board.BLACK))
 			result -= CASTLE_VALUE;
 
+		byte[][] boardArray = board.getBoard();
 		for(int x=0; x<8; x++){
 			for(int y=0; y<8; y++){
-				curr = board.board[x][y];
+				curr = boardArray[x][y];
 				if(Board.isEmpty(curr))
 					continue;
 				switch(Board.pieceOf(curr)){
@@ -98,7 +99,7 @@ public class BasicEvaluator implements Evaluator {
 					val = KING_VALUE;
 					break;
 				}
-				if(Board.colorOf(curr) != board.turn)
+				if(Board.colorOf(curr) != board.getTurn())
 					val *= -1;
 				result += val;
 			}

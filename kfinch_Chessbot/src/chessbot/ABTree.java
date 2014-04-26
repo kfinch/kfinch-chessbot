@@ -38,7 +38,7 @@ class ABTree implements SearchTree {
 		List<Move> ml = b.generateMoves();
 		
 		if(ml.isEmpty()){ //i.e. board is in a game over position
-			if(b.inCheck(b.turn)) //checkmate!
+			if(b.inCheck(b.getTurn())) //checkmate!
 				return -checkmate;
 			else 				  //stalemate!
 				return -stalemate;

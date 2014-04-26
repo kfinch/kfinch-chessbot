@@ -2,7 +2,6 @@ package chess_backend;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
 import java.util.Random;
 
 /*
@@ -12,28 +11,30 @@ import java.util.Random;
  */
 
 public class Board {
-
-	public static final boolean DEBUG = false;
 	
-	public byte[][] board = new byte[8][8];
 	// The board, and the pieces on it. Color and piece packed into byte.
+	private byte[][] board = new byte[8][8];
 
-	public int previousDoublePush;
 	// Marks the column of last turn's 2 space pawn push, or -1 if there wasn't one.
+	private int previousDoublePush;
 	
-	public byte turn; // Which player's turn it is.
+	 // Which player's turn it is.
+	private byte turn;
 
-	public boolean[] kingsideCastle = new boolean[2], queensideCastle = new boolean[2];
 	// Remembers if a castle is still possible on the kingside or queenside.
+	// ex: kingsideCastle[WHITE] == true iff white can still castle on the kingside.
+	private boolean[] kingsideCastle = new boolean[2], queensideCastle = new boolean[2];
 	
-	public boolean[] hasCastled = new boolean[2];
 	// Remembers if either player has castled.
+	// ex. hasCastled[WHITE] == true iff white has castled.
+	private boolean[] hasCastled = new boolean[2];
 
-	public int[] kingx = new int[2];
-	public int[] kingy = new int[2];
 	// Redundantly stores the king positions for faster check calculations.
+	private int[] kingx = new int[2];
+	private int[] kingy = new int[2];
 	
-	public int hash;
+	// This object's hash value. Methods that modify this object's data also update the hash properly.
+	private int hash;
 
 	public static final byte EMPTY = 0; //empty squares will always be 0x00
 	public static final byte PAWN = 1;
@@ -217,6 +218,87 @@ public class Board {
 	}
 	
 	/**
+	 * Getter method for board.
+	 * @return The 2D byte array that represents the piece positions.
+	 */
+	public byte[][] getBoard(){
+		return board;
+	}
+	
+	/**
+	 * Getter method for individual squares on the board.
+	 * @param c The coordinates of the desired square.
+	 * @return The byte representation of the contents of the specified square.
+	 */
+	public byte getSquare(Coordinate c){
+		return board[c.x][c.y];
+	}
+	
+	/**
+	 * Getter method for individual squares on the board.
+	 * @param x The x value (column) of the desired square.
+	 * @param y The y value (row) of the desired square.
+	 * @return The byte representation of the contents of the specified square.
+	 */
+	public byte getSquare(int x, int y){
+		return board[x][y];
+	}
+	
+	/**
+	 * Getter method for previousDoublePush.
+	 * @return The column of last turn's double pawn push (indexed from 0), or -1 if there wasn't one.
+	 */
+	public int getPreviousDoublePush(){
+		return previousDoublePush;
+	}
+	
+	/**
+	 * Getter method for turn.
+	 * @return Whose turn it is.
+	 */
+	public byte getTurn(){
+		return turn;
+	}
+	
+	/**
+	 * Getter method for canKingsideCastle.
+	 * @param turn Which player we're checking the castle status of.
+	 * @return True iff it is still possible for the specified player to castle on the king side.
+	 * 		   (But not necessarily this turn)
+	 */
+	public boolean canKingsideCastle(byte turn){
+		return kingsideCastle[turn];
+	}
+
+	/**
+	 * Getter method for canQueensideCastle.
+	 * @param turn Which player we're checking the castle status of.
+	 * @return True iff it is still possible for the specified player to castle on the queen side.
+	 * 		   (But not necessarily this turn)
+	 */
+	public boolean canQueensideCastle(byte turn){
+		return queensideCastle[turn];
+	}
+	
+	/**
+	 * Getter method for hasCastled.
+	 * @param turn Which player we're checking the castle status of.
+	 * @return True iff the specified player has castled.
+	 */
+	public boolean hasCastled(byte turn){
+		return hasCastled[turn];
+	}
+	
+	/**
+	 * Getter method for kingx/kingy
+	 * @param turn Which player's king we're getting.
+	 * @return A coordinate representing the location of the specified player's king.
+	 */
+	public Coordinate getKingPosition(byte turn){
+		return new Coordinate(kingx[turn], kingy[turn]);
+	}
+	
+	/**
 	 * Returns true iff m is a legal move for this board.
 	 * 
 	 * This method is implemented naively for reduced complexity, but that's making it quite slow.
@@ -336,8 +418,6 @@ public class Board {
 	public boolean inCheck(byte player) {
 		int mkx = kingx[player];
 		int mky = kingy[player];
-		if(DEBUG)
-			System.out.println("Player's king at (" + mkx + "," + mky + ")...");
 		int x, y;
 
 		//first check all ranks, files, and diagonals for threats
@@ -437,11 +517,7 @@ public class Board {
 	 *  and moving the pawn one past the back row is how a knight promote is represented. (see Move.java)
 	 */
 	public void generatePawnMoves(List<Move> moveList, int x, int y) {
-		if(DEBUG)
-			System.out.println("Generating pawn moves at (" + x + "," + y + ")...");
-		
 		int ex, ey;
-		
 		int dir = 1; //direction this pawn moves
 		int homeRow = 1; //this pawn's home row
 		if(turn == BLACK){
@@ -520,9 +596,6 @@ public class Board {
 	 *  This generic method serves to generate moves for the bishop, knight, rook, and queen.
 	 */
 	public void generatePieceMoves(List<Move> moveList, int x, int y, int[] moves, boolean multi) {
-		if(DEBUG)
-			System.out.println("Generating piece moves at (" + x + "," + y + ")...");
-		
 		int ex, ey, dx, dy;
 		
 		//must temporarily move the piece to ensure an otherwise legal move doesn't put active player in check
@@ -533,13 +606,9 @@ public class Board {
 		for(int i=0; i<moves.length; i+=2){
 			dx = moves[i];
 			dy = moves[i+1];
-			if(DEBUG)
-				System.out.println("Moves in direction (" + dx + "," + dy + ")...");
 			ex = x + dx;
 			ey = y + dy;
 			while(((ex | ey) & 8) == 0){ //checks bounds
-				if(DEBUG)
-					System.out.println("Checking (" + ex + "," + ey + ")...");
 				if(isEmpty(board[ex][ey])){
 					board[ex][ey] = orig;
 					if(!inCheck(turn))
@@ -571,10 +640,6 @@ public class Board {
 	public void generateKingMoves(List<Move> moveList) {
 		int x = kingx[turn];
 		int y = kingy[turn];
-		
-		if(DEBUG)
-			System.out.println("Generating king moves at (" + x + "," + y + ")...");
-		
 		int ex, ey, dx, dy;
 		
 		//must temporarily move the piece to ensure an otherwise legal move doesn't put active player in check

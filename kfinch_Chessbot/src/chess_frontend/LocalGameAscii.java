@@ -29,9 +29,9 @@ public class LocalGameAscii {
 		while(true){
 			System.out.println(gameState);
 			if(gameState.generateMoves().isEmpty()){ //The game is over.
-				if(gameState.inCheck(gameState.turn)){
+				if(gameState.inCheck(gameState.getTurn())){
 					System.out.println("Checkmate!");
-					if(gameState.turn == Board.WHITE){
+					if(gameState.getTurn() == Board.WHITE){
 						System.out.println("White wins!");
 						return 1;
 					}
@@ -46,7 +46,7 @@ public class LocalGameAscii {
 					return 2;
 				}
 			}
-			else if(gameState.turn == Board.WHITE){ //It's white's turn.
+			else if(gameState.getTurn() == Board.WHITE){ //It's white's turn.
 				do{
 					m = white.getMove(gameState);
 				} while(m == null || !gameState.isLegalMove(m)); //check move legality
