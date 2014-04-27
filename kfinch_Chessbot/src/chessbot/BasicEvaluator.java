@@ -56,8 +56,7 @@ public class BasicEvaluator implements Evaluator {
 		  { -5, -5, -5, -5, -5, -5, -5, -5 } };
 
 	
-	public BasicEvaluator(){
-	}
+	public BasicEvaluator(){}
 	
 	/** Evaluates the material and rough positional strength of a position.
 	 *  Positive means better for the active player, negative means better for other player.
@@ -66,14 +65,15 @@ public class BasicEvaluator implements Evaluator {
 		int result = 0;
 		byte curr;
 		int val = 0;
+		byte turn = board.getTurn();
+		byte[][] boardArray = board.getBoard();
 
 		// Favor castled positions
-		if(board.hasCastled(board.getTurn()))
+		if(board.hasCastled(turn))
 			result += CASTLE_VALUE;
-		if(board.hasCastled(board.getTurn() == Board.BLACK ? Board.WHITE : Board.BLACK))
+		if(board.hasCastled(turn == Board.BLACK ? Board.WHITE : Board.BLACK))
 			result -= CASTLE_VALUE;
 
-		byte[][] boardArray = board.getBoard();
 		for(int x=0; x<8; x++){
 			for(int y=0; y<8; y++){
 				curr = boardArray[x][y];
@@ -99,7 +99,7 @@ public class BasicEvaluator implements Evaluator {
 					val = KING_VALUE;
 					break;
 				}
-				if(Board.colorOf(curr) != board.getTurn())
+				if(Board.colorOf(curr) != turn)
 					val *= -1;
 				result += val;
 			}

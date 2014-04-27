@@ -59,7 +59,7 @@ public class Board {
 	private static int[] zobrist = new int[16 * 64];
 	
 	static {
-		Random r = new Random(1337);
+		Random r = new Random(1337); //what's the worst that could happen?
 		for (int i = 0; i < zobrist.length; i++)
 			zobrist[i] = r.nextInt();
 	}
