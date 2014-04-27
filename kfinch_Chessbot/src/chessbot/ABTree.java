@@ -54,8 +54,6 @@ class ABTree implements SearchTree {
 		long beginTime, endTime;
 		beginTime = System.nanoTime();
 		try{
-			//fixedDepth = 2;
-			//treeSearchRecurse(b,2,-Integer.MAX_VALUE,Integer.MAX_VALUE);
 			//search is progressively deepened, with the best move from previous iterations searched first.
 			for(int i=2; i<=depth; i++){
 				if(verbose)
@@ -65,7 +63,7 @@ class ABTree implements SearchTree {
 				if(verbose)
 					System.out.println("Current best move found: " + bestMove.toNotation());
 			}
-		//TODO: See if this works as intended. Furthermore, is this the best way to handle the possibility of OOM if depth too high?
+		//if we OOM during a tree search, just return our best working solution.
 		} catch (OutOfMemoryError e){
 			if(verbose)
 				System.out.println("Ran out of memory! Returning best working solution.");
@@ -138,12 +136,18 @@ class ABTree implements SearchTree {
 				break;
 		}
 		
-		//Add the new (or better) evaluation to the transposition table.
+		//Add the new (or deeper) evaluation to the transposition table.
 		transpositionTable.put(b, new PositionInfo(depth, alpha));
 		
 		return alpha;
 	}
 
+	/*
+	 * This class is used as a glorified struct for the transposition table.
+	 * The transposition table is a Map with Key -> Board and Value -> PositionInfo.
+	 * 'depth' is the depth at which the board-key was evaluated,
+	 * and 'evaluation' is the resulting strength valuation of the board-key at that depth.
+	 */
 	private class PositionInfo{
 		private int depth;
 		private int evaluation;
