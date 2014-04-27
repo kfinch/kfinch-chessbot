@@ -3,16 +3,18 @@ kfinch-chessbot
 
 kfinch's chessbot! Contains a framework for running a game of chess, a frontend, and a bot.
 
-Apart from the back-end chess framework, the source is currently a mess! Sorry, I'm working on that.
+USAGE:
+  Currently the only UI option prints to the console and takes input from the console.
+  I'm working on an actual GUI, but for now this will have to suffice.
+  To access the frontend menu, launch the main method in chess_frontend/FrontendAscii.java
 
 TODO:
 High Priority -
-  Think of more things to add to this todo list  =)
-  Create a more sensible frontend for basic gaming / testing (this will probably requrie class restructuring).
-  Create a testing suite for harder to test features.
+  Implement a simple GUI to make actually playing with the chessbot easier / more convenient.
+  Figure out a way to test the effectiveness of some of the harder to test features.
+    (Like transposition tables, AB pruning, etc.)
 
 Low Priority - 
-  Use Zobrist hashing feature to implement use of transposition tables during game tree search.
   Fiddle with evaluator to optimize performance.
   Allow an option that adds more 'randomness' to bots moves.
   Enable server to detect and handle loops of repeated moves.
