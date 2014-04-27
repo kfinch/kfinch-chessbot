@@ -88,6 +88,6 @@ class Tester {
 	}
 	
 	private static void test4(){
-		LocalGameAscii.runGame(new Board(), new HumanPlayer(), new ChessBot());
+		LocalGameAscii.runGame(new Board(), new HumanPlayer(), new ChessBot(6,true));
 	}
 }

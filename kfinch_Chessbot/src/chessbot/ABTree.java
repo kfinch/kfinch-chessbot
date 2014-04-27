@@ -53,6 +53,7 @@ class ABTree implements SearchTree {
 		
 		long beginTime, endTime;
 		beginTime = System.nanoTime();
+		//TODO: Search clearly slows WAY down when nearing OOM without doing much useful work. Investigate possible fixes.
 		try{
 			//search is progressively deepened, with the best move from previous iterations searched first.
 			for(int i=2; i<=depth; i++){
@@ -67,7 +68,6 @@ class ABTree implements SearchTree {
 		} catch (OutOfMemoryError e){
 			if(verbose)
 				System.out.println("Ran out of memory! Returning best working solution.");
-			return bestMove;
 		}
 		endTime = System.nanoTime();
 		
