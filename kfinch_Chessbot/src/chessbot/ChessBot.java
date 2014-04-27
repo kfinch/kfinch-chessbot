@@ -22,9 +22,9 @@ public class ChessBot implements Player{
 		fixedDepth = 6;
 	}
 	
-	public ChessBot(int fixedDepth){
+	public ChessBot(int fixedDepth, boolean verbose){
 		evaluator = new BasicEvaluator();
-		searchTree = new ABTree(evaluator);
+		searchTree = new ABTree(evaluator, verbose);
 		this.fixedDepth = fixedDepth;
 	}
 
