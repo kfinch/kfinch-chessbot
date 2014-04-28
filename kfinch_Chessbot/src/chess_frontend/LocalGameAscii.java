@@ -51,7 +51,7 @@ public class LocalGameAscii {
 					m = white.getMove(gameState);
 				} while(m == null || !gameState.isLegalMove(m)); //check move legality
 			}
-			else{ 									//It's black's turn.
+			else{ //It's black's turn.
 				do{
 					m = black.getMove(gameState);
 				} while(m == null || !gameState.isLegalMove(m)); //check move legality
