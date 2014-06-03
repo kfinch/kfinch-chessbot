@@ -4,51 +4,65 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingWorker;
+
 import chess_backend.Board;
 import chess_backend.Move;
+import chess_swingfrontend.GamePanel;
 
 /**
- * ABTree.java
- * A Minimax tree with alpha-beta pruning for searching the game tree.
- * This search tree is further optimized with a tranposition table and iterative deepening.
+ * ChessBotWorker.java
+ * 
+ * This class is basically a copy pasta of ABTree.java that extends SwingWorker.
+ * Unfortunately, the way I intended to set up the 'SearchTree' interface just doesn't work out when trying
+ * to use SwingWorker to run a threaded version of the tree search that can be stopped at any time.
+ * 
+ * This class's main function is to use a minimax tree with alpha-beta pruning to searching the game tree.
+ * This search tree is further optimized with a transposition table and iterative deepening.
  */
-public class ABTree implements SearchTree {
+public class ChessBotWorker extends SwingWorker<Move,Move>{
 	
+	private GamePanel client;
+	private Evaluator e; //static position evaluator used by the search
+	private Board b; //game state to start search from
+	private int maxDepth; //maximum depth to search to
 	
-	private int fixedDepth;
-	protected Move bestMove;
-	private Evaluator e;
-	private int checkmate;
-	private int stalemate;
+	private int searchDepth; //current search depth used by iterative deepened recurse search
+	private Move bestMove; //the best move found so far
 	
-	//The switch for verbose mode, and some vars for keeping track of stats to be printed.
+	private int checkmate; //value the evaluator gives to checkmate
+	private int stalemate; //value the evaluator gives to stalemate
+	
+	//The switch for verbose mode, and various stats verbose mode displays
 	private boolean verbose;
-	private int posEvalCount;
-	private int evalsSkipped;
+	private int posEvalCount, evalsSkipped;
 
 	//Keeps a store of previously evaluated board positions so as to not redundantly search the same board state repeatedly.
 	private Map<Board,PositionInfo> transpositionTable;
 	
-	public ABTree(Evaluator e){
+	public ChessBotWorker(Board b, int maxDepth, Evaluator e, GamePanel client){
+		this.b = b;
+		this.maxDepth = maxDepth;
 		this.e = e;
+		this.client = client;
 		checkmate = e.getCheckmate();
 		stalemate = e.getStalemate();
 		transpositionTable = new HashMap<Board,PositionInfo>();
 		verbose = false;
 	}
 	
-	public ABTree(Evaluator e, boolean verbose){
-		this(e);
+	public ChessBotWorker(Board b, int maxDepth, Evaluator e, GamePanel client, boolean verbose){
+		this(b,maxDepth,e,client);
 		this.verbose = verbose;
 	}
 
 	/**
 	 * Searches to the specified depth starting from the specified board position, and returns the best move found.
 	 */
-	public Move getBestMoveFixed(Board b, int depth) {
+	@Override
+	public Move doInBackground() {
 		posEvalCount = 0;
 		evalsSkipped = 0;
-		transpositionTable.clear(); //Table gets WAY too big if not cleared between calls.
 		bestMove = null;
 		
 		long beginTime, endTime;
@@ -56,11 +70,11 @@ public class ABTree implements SearchTree {
 		//TODO: Search clearly slows WAY down when nearing OOM without doing much useful work. Investigate possible fixes.
 		try{
 			//search is progressively deepened, with the best move from previous iterations searched first.
-			for(int i=2; i<=depth; i++){
+			for(int i=2; i<=maxDepth; i++){
 				if(verbose)
 					System.out.println("Searching at depth " + i + "...");
-				fixedDepth = i;
-				treeSearchRecurse(b,i,-Integer.MAX_VALUE,Integer.MAX_VALUE);
+				searchDepth = i;
+				treeSearchRecurse(b, i, -Integer.MAX_VALUE, Integer.MAX_VALUE);
 				if(verbose)
 					System.out.println("Current best move found: " + bestMove.toNotation());
 			}
@@ -77,16 +91,18 @@ public class ABTree implements SearchTree {
 			System.out.println("Evaluations skipped: " + evalsSkipped);
 			System.out.println("TT Size: " + transpositionTable.size());
 		}
+		
 		return bestMove;
 	}
 	
 	/*
-	 * Recursive helper for getBestMoveFixed. Performs an alpha-beta pruned minimax tree search.
+	 * Recursive helper for doInBackground. Performs an alpha-beta pruned minimax tree search.
 	 * Optimizes search time via a transposition table.
 	 * Modifies bestMove as a side effect.
 	 */
 	private int treeSearchRecurse(Board b, int depth, int alpha, int beta){
 		posEvalCount++;
+		publish(bestMove); //constantly updates publish with current best move TODO: too frequently?
 		
 		//This comes before transposition table stuff because attempting to use 
 		//transposition tables at depth 0 results in pretty immediate OOM.
@@ -117,7 +133,7 @@ public class ABTree implements SearchTree {
 		//In addition, searching the probable best position first usually results in much more AB pruning.
 		//Note that this won't cause a redundant search of bestMove in the following for loop
 		//because this search's entry will have been added to the tranposition table.
-		if(fixedDepth == depth && bestMove != null){
+		if(searchDepth == depth && bestMove != null){
 			curr = -treeSearchRecurse(b.afterMove(bestMove),depth-1,-beta,-alpha);
 			if(curr > alpha)
 				alpha = curr;
@@ -129,7 +145,7 @@ public class ABTree implements SearchTree {
 			curr = -treeSearchRecurse(b.afterMove(m),depth-1,-beta,-alpha);  
 			if(curr > alpha){
 				alpha = curr;
-				if(fixedDepth == depth)
+				if(searchDepth == depth)
 					bestMove = m;
 			}
 			if(alpha >= beta)
@@ -141,6 +157,12 @@ public class ABTree implements SearchTree {
 		
 		return alpha;
 	}
+	
+	@Override
+	public void process(List<Move> moves){
+		client.updateBestMove(moves.get(moves.size()-1));
+	}
+	
 
 	/*
 	 * This class is used as a glorified struct for the transposition table.
@@ -157,11 +179,4 @@ public class ABTree implements SearchTree {
 			this.evaluation = evaluation;
 		}
 	}
-	
-	public Move getBestMoveTimed(Board b) {
-		return null; //TODO: Implement with new time control signature, etc.
-	}
-
-	
 }
-

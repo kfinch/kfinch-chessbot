@@ -226,7 +226,7 @@ public class Board {
 	}
 	
 	/**
-	 * Getter method for individual squares on the board.
+	 * Getter method for individual squares on the board. Throws ArrayOutOfBounds if given bad coordinates.
 	 * @param c The coordinates of the desired square.
 	 * @return The byte representation of the contents of the specified square.
 	 */
@@ -235,7 +235,7 @@ public class Board {
 	}
 	
 	/**
-	 * Getter method for individual squares on the board.
+	 * Getter method for individual squares on the board. Throws ArrayOutOfBounds if given bad coordinates.
 	 * @param x The x value (column) of the desired square.
 	 * @param y The y value (row) of the desired square.
 	 * @return The byte representation of the contents of the specified square.
