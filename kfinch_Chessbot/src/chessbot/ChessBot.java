@@ -8,7 +8,7 @@ import chess_frontend.Player;
  * ChessBot.java
  * The chess bot itself. Given a board as input and its internal AB Tree, calculates the best move. 
  */
-
+// this isn't actually used by the swing front end, I may end up discarding it entirely
 public class ChessBot implements Player{
 	
 	private int fixedDepth;

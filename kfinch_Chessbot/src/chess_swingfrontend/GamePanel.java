@@ -55,6 +55,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	private static final String WHITES_TURN_MESSAGE = "White to play";
 	private static final String BLACKS_TURN_MESSAGE = "Black to play";
 	
+	private static final int DEFAULT_BOT_SEARCH_DEPTH = 5; //searches at 5 ply
+	private static final int DEFAULT_BOT_SEARCH_TIME = 5*1000; //in milliseconds, so this is 5 seconds
+	
 	private ChessGameSwing parent;
 	
 	private ChessBotWorker chessBot; //the worker thread that will run bot computations
@@ -85,16 +88,14 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	private BoardPanel boardPanel;
 	
 	public GamePanel(ChessGameSwing parent){
-		//JLabel message = new JLabel("Game goes here LOL");
-		//add(message, BorderLayout.CENTER);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addComponentListener(this);
 		
 		this.parent = parent;
 		
-		botSearchDepth = 5; //TODO: make this prefs controlled
-		botSearchTime = 5*1000; //TODO: make this prefs controlled
+		botSearchDepth = DEFAULT_BOT_SEARCH_DEPTH; //TODO: make this prefs controlled
+		botSearchTime = DEFAULT_BOT_SEARCH_TIME; //TODO: make this prefs controlled
 		botColor = Board.BLACK; //TODO: make this prefs controlled
 		
 		boardPanel = new BoardPanel(this);

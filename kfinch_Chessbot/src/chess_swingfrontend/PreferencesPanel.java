@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 public class PreferencesPanel extends JPanel implements ActionListener{
 	
 	public PreferencesPanel(){
-		JLabel message = new JLabel("Prefs go here LOL");
+		JLabel message = new JLabel("Preferences NYI  )=   Press the prefs button again to return to an active game.");
 		add(message, BorderLayout.CENTER);
 	}
 

@@ -1,16 +1,18 @@
 package chess_swingfrontend;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import chess_backend.Board;
+import chess_backend.Coordinate;
 import chess_backend.Move;
 
 /**
@@ -54,6 +56,7 @@ public class BoardPanel extends JPanel implements MouseListener, MouseMotionList
 	boolean isPieceDragging; //tracks if a piece is being dragged by the mouse
 	byte draggedPiece; //the piece being dragged by the mouse
 	int mx, my; //the mouses location
+	List<Move> humanPonder;
 	
 	//the board coordinates of a player specified move
 	private int sx, sy, ex, ey;
@@ -64,6 +67,7 @@ public class BoardPanel extends JPanel implements MouseListener, MouseMotionList
 		
 		this.parent = parent;
 		isPieceDragging = false;
+		humanPonder = new ArrayList<Move>();
 		updateDimensions();
 	}
 	
@@ -84,6 +88,7 @@ public class BoardPanel extends JPanel implements MouseListener, MouseMotionList
 		
 		Board gameState = parent.getGameState();
 		Move prevMove = parent.getPrevMove();
+		Move bestMove = parent.getBestMove();
 		
 		//draw board
 		g2d.setColor(GamePanel.WHITE_SQUARE_COLOR);
@@ -119,6 +124,22 @@ public class BoardPanel extends JPanel implements MouseListener, MouseMotionList
 						drawPiece(g2d, piece, squareDim*x, squareDim*y, 1.0f);
 				}
 			}
+		}
+		
+		g2d.setColor(GamePanel.PONDER_COLOR);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+		
+		//draw bot ponder
+		if(bestMove != null){
+			g2d.fillRect(bestMove.sx*squareDim, (7-bestMove.sy)*squareDim, squareDim, squareDim);
+			g2d.fillRect(bestMove.ex*squareDim, (7-bestMove.ey)*squareDim, squareDim, squareDim);
+		}
+		
+		//draw human ponder
+		//if(!humanPonder.isEmpty())
+			//g2d.fillRect(sx*squareDim, (7-sy)*squareDim, squareDim, squareDim);
+		for(Move m : humanPonder){
+			g2d.fillRect(m.ex*squareDim, (7-m.ey)*squareDim, squareDim, squareDim);
 		}
 		
 		//draw dragged piece (if needed)
@@ -195,11 +216,13 @@ public class BoardPanel extends JPanel implements MouseListener, MouseMotionList
 			
 			isPieceDragging = true;
 			draggedPiece = parent.getGameState().getSquare(sx,sy);
+			humanPonder = gameState.generateSquareMoves(sx, sy);
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		isPieceDragging = false;
+		humanPonder.clear();
 		
 		mx = e.getX();
 		my = e.getY();

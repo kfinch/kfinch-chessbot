@@ -33,7 +33,7 @@ public class Board {
 	private int[] kingx = new int[2];
 	private int[] kingy = new int[2];
 	
-	// This object's hash value. Methods that modify this object's data also update the hash properly.
+	// This object's hash value. Methods that modify this object's data should also update the hash properly.
 	private int hash;
 
 	public static final byte EMPTY = 0; //empty squares will always be 0x00
@@ -302,8 +302,9 @@ public class Board {
 	 * Returns true iff m is a legal move for this board.
 	 * 
 	 * This method is implemented naively for reduced complexity, but that's making it quite slow.
-	 * It's intended to be used only to verify the legality of a human player's requested move.
-	 * To find all legal moves for a bot, use generateMoves() instead.
+	 * It's intended to be used only to verify the legality of a human player's requested move
+	 * (or the legality of a bot's final choice of move).
+	 * To find all legal moves for a bot while tree-searching, use generateMoves() instead.
 	 */
 	public boolean isLegalMove(Move m){
 		List<Move> ml = generateMoves();
@@ -324,7 +325,8 @@ public class Board {
 	/** Applies Move m to this Board while modifying the hash appropriately.
 	 * Does NOT check for move legality. */
 	/* Weirdness involving handling pawns moving off the edges of the board are to handle knight promotes.
-	 * See Move.java for additional details.
+	 * In short, ordering a pawn off the back edge of a board is equivalent to ordering it to the back row,
+	 * but asking for a Knight promote rather than a Queen promote.
 	 */
 	public void makeMove(Move m) {
 		previousDoublePush = -1; //will be set again if this move actually is a double push
@@ -476,7 +478,43 @@ public class Board {
 		return false;
 	}
 
-	/** Returns a list of every legal move from the current game state */
+	/**
+	 * Generates and returns a list of every legal move for the piece at the given coordinates.
+	 */
+	public List<Move> generateSquareMoves(int x, int y){
+		List<Move> moveList = new ArrayList<Move>(27); //27 is the maximum number of legal moves for a single piece
+		if(isEmpty(board[x][y])) //can't move a piece that isn't there
+			return moveList;
+		if(colorOf(board[x][y]) != turn) //can't move pieces that aren't the active player's
+			return moveList;
+		switch(pieceOf(board[x][y])){
+		case PAWN:
+			generatePawnMoves(moveList, x, y);
+			break;
+		case KNIGHT:
+			generatePieceMoves(moveList, x, y, KNIGHT_MOVES, false);
+			break;
+		case BISHOP:
+			generatePieceMoves(moveList, x, y, DIAGONAL_MOVES, true);
+			break;
+		case ROOK:
+			generatePieceMoves(moveList, x, y, LINE_MOVES, true);
+			break;
+		case QUEEN:
+			generatePieceMoves(moveList, x, y, DIAGONAL_MOVES, true);
+			generatePieceMoves(moveList, x, y, LINE_MOVES, true);
+			break;
+		case KING:
+			generateKingMoves(moveList);
+			generateCastlingMoves(moveList);
+			break;
+		}
+		return moveList;
+	}
+	
+	/**
+	 * Returns a list of every legal move from the current game state
+	 */
 	public List<Move> generateMoves() {
 		//TODO: Empirically test to see if 50 is a reasonable starting size for this list
 		List<Move> moveList = new ArrayList<Move>(50);
@@ -777,7 +815,7 @@ public class Board {
 			case 13 : return "q";
 			case 14 : return "k";
 		}
-		return "INVALID"; //Should never hit this. TODO: Add error handling here.
+		return "INVALID"; //Should never hit this. TODO: Add error handling here?
 	}
 
 	/**

@@ -102,7 +102,6 @@ public class ChessBotWorker extends SwingWorker<Move,Move>{
 	 */
 	private int treeSearchRecurse(Board b, int depth, int alpha, int beta){
 		posEvalCount++;
-		publish(bestMove); //constantly updates publish with current best move TODO: too frequently?
 		
 		//This comes before transposition table stuff because attempting to use 
 		//transposition tables at depth 0 results in pretty immediate OOM.
@@ -122,7 +121,7 @@ public class ChessBotWorker extends SwingWorker<Move,Move>{
 		if(ml.isEmpty()){ //i.e. board is in a game over position
 			if(b.inCheck(b.getTurn())) //checkmate!
 				return -checkmate;
-			else 				  //stalemate!
+			else 				       //stalemate!
 				return -stalemate;
 		}
 		
@@ -145,8 +144,10 @@ public class ChessBotWorker extends SwingWorker<Move,Move>{
 			curr = -treeSearchRecurse(b.afterMove(m),depth-1,-beta,-alpha);  
 			if(curr > alpha){
 				alpha = curr;
-				if(searchDepth == depth)
+				if(searchDepth == depth){
 					bestMove = m;
+					publish(bestMove); //publish update of best move so we have a 'working solution'
+				}
 			}
 			if(alpha >= beta)
 				break;
@@ -166,7 +167,7 @@ public class ChessBotWorker extends SwingWorker<Move,Move>{
 
 	/*
 	 * This class is used as a glorified struct for the transposition table.
-	 * The transposition table is a Map with Key -> Board and Value -> PositionInfo.
+	 * The transposition table is a Map with Board as the key and PositionInfo as the value.
 	 * 'depth' is the depth at which the board-key was evaluated,
 	 * and 'evaluation' is the resulting strength valuation of the board-key at that depth.
 	 */
